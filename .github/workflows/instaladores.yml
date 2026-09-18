@@ -1,0 +1,129 @@
+name: Instaladores
+
+on:
+  workflow_dispatch:
+    inputs:
+      incluir_intel:
+        description: "Gerar também para Mac com processador Intel (mais antigo)"
+        type: boolean
+        default: false
+  push:
+    tags: ["v*"]
+
+jobs:
+  # ------------------------------------------------------------------ Windows
+  windows:
+    name: Windows (.exe)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar o Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Montar o instalador
+        shell: cmd
+        run: construir_windows.bat
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LegendaFacil-Windows
+          path: Output/*.exe
+          retention-days: 14
+          compression-level: 0     # o .exe já vem comprimido
+
+  # ------------------------------------------------------- macOS Apple Silicon
+  mac:
+    name: macOS Apple Silicon (.dmg)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Preparar o ambiente
+        run: python -m venv .venv
+
+      - name: Montar o instalador
+        run: ./construir_mac.sh
+
+      - name: Dar nome à arquitetura
+        run: for f in *.dmg; do mv "$f" "${f%-mac.dmg}-mac-apple-silicon.dmg"; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LegendaFacil-macOS-AppleSilicon
+          path: "*.dmg"
+          retention-days: 14
+          compression-level: 0     # o .dmg já vem comprimido
+
+  # --------------------------------------------------------------- macOS Intel
+  # Só roda se você pedir, ou ao publicar uma versão (v1.0, v1.1...).
+  # Macs Intel não conseguem abrir o build de Apple Silicon, e vice-versa.
+  mac-intel:
+    name: macOS Intel (.dmg)
+    if: >
+      github.event_name == 'push' ||
+      inputs.incluir_intel
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Preparar o ambiente
+        run: python -m venv .venv
+
+      - name: Montar o instalador
+        run: ./construir_mac.sh
+
+      - name: Dar nome à arquitetura
+        run: for f in *.dmg; do mv "$f" "${f%-mac.dmg}-mac-intel.dmg"; done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LegendaFacil-macOS-Intel
+          path: "*.dmg"
+          retention-days: 14
+          compression-level: 0
+
+  # -------------------------------------------- publicar quando marcar a versão
+  publicar:
+    name: Publicar a versão
+    needs: [windows, mac, mac-intel]
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: entregas
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: entregas/**/*
+          generate_release_notes: true
+          body: |
+            ## Legenda Fácil ${{ github.ref_name }}
+
+            Baixe o arquivo certo para o seu computador:
+
+            | Computador | Arquivo |
+            |---|---|
+            | Windows | `LegendaFacil-Instalador.exe` |
+            | Mac (M1, M2, M3, M4…) | `...-mac-apple-silicon.dmg` |
+            | Mac mais antigo (Intel) | `...-mac-intel.dmg` |
+
+            Na primeira vez que abrir, o sistema vai avisar que não conhece o
+            programa. No Mac: clique com o **botão direito** no programa →
+            **Abrir** → **Abrir**. No Windows: **Mais informações** →
+            **Executar assim mesmo**. Só na primeira vez.
