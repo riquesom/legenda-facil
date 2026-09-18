@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Legenda Fácil</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<header class="topo">
+  <div class="marca">
+    <span class="marca-ico">🎬</span>
+    <span class="marca-nome">Legenda Fácil</span>
+  </div>
+  <div class="topo-botoes">
+    <button id="btn-abrir" class="bt bt-azul">
+      <span class="bt-ico">📂</span><span>ABRIR VÍDEO</span>
+    </button>
+    <button id="btn-salvar" class="bt bt-verde" disabled>
+      <span class="bt-ico">💾</span><span>SALVAR VÍDEO PRONTO</span>
+    </button>
+  </div>
+</header>
+
+<main class="meio">
+  <section class="palco">
+    <div class="moldura">
+      <div class="tela" id="tela">
+        <video id="video" playsinline preload="auto"></video>
+        <div id="legenda-preview" class="legenda-preview"></div>
+      </div>
+      <div class="vazio" id="vazio">
+        <div class="vazio-ico">🎬</div>
+        <div class="vazio-titulo">Nenhum vídeo aberto</div>
+        <div class="vazio-texto">Clique em <b>ABRIR VÍDEO</b> lá em cima</div>
+      </div>
+    </div>
+
+    <div class="controles">
+      <button id="btn-play" class="bt bt-play" disabled>
+        <span class="bt-ico" id="ico-play">▶</span><span id="txt-play">TOCAR</span>
+      </button>
+      <button id="btn-comeco" class="bt bt-escuro" disabled>
+        <span class="bt-ico">⏮</span><span>COMEÇO</span>
+      </button>
+      <div class="relogio"><span id="relogio">00:00 / 00:00</span></div>
+    </div>
+  </section>
+
+  <aside class="lateral">
+    <h2 class="lateral-titulo">LEGENDA</h2>
+
+    <button id="btn-legenda" class="bt bt-verde bt-bloco" disabled>
+      <span class="bt-ico">✨</span><span>CRIAR LEGENDA AUTOMÁTICA</span>
+    </button>
+
+    <div class="grupo">
+      <div class="grupo-nome">Tamanho das letras</div>
+      <div class="opcoes" id="op-tamanho">
+        <button class="op" data-valor="medio">Médio</button>
+        <button class="op ativo" data-valor="grande">Grande</button>
+        <button class="op" data-valor="gigante">Gigante</button>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-nome">Cor das letras</div>
+      <div class="opcoes" id="op-cor">
+        <button class="op ativo" data-valor="branca">Branca</button>
+        <button class="op" data-valor="amarela">Amarela</button>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-nome">
+        Altura da legenda <span class="dica-inline" id="altura-nome">(embaixo)</span>
+      </div>
+      <div class="opcoes">
+        <button id="btn-subir" class="bt bt-claro bt-meio" disabled>
+          <span class="bt-ico">⬆️</span><span>SUBIR</span>
+        </button>
+        <button id="btn-descer" class="bt bt-claro bt-meio" disabled>
+          <span class="bt-ico">⬇️</span><span>DESCER</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="grupo">
+      <div class="grupo-nome">Idioma falado</div>
+      <div class="opcoes" id="op-idioma">
+        <button class="op ativo" data-valor="pt">Português</button>
+        <button class="op" data-valor="en">Inglês</button>
+        <button class="op" data-valor="es">Espanhol</button>
+      </div>
+    </div>
+
+    <div class="grupo grupo-cresce">
+      <div class="grupo-nome linha-nome">
+        <span>Falas <span class="dica-inline">(clique para corrigir)</span></span>
+        <button id="btn-limpar" class="bt bt-vermelho bt-pequeno" disabled
+                title="Apagar todas as legendas">
+          <span class="bt-ico">🗑️</span><span>APAGAR TODAS</span>
+        </button>
+      </div>
+      <div class="lista" id="lista-legendas">
+        <div class="lista-vazia">Ainda não há legenda.<br>Use o botão verde acima.</div>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<section class="tempo">
+  <div class="ferramentas">
+    <div class="grupo-bt">
+      <button id="btn-cortar" class="bt bt-claro" disabled>
+        <span class="bt-ico">✂️</span><span>CORTAR AQUI</span>
+      </button>
+      <button id="btn-apagar" class="bt bt-vermelho" disabled>
+        <span class="bt-ico">🗑️</span><span>APAGAR PEDAÇO</span>
+      </button>
+      <button id="btn-desfazer" class="bt bt-claro" disabled>
+        <span class="bt-ico">↩️</span><span>DESFAZER</span>
+      </button>
+      <button id="btn-ima" class="bt bt-claro ligado" disabled>
+        <span class="bt-ico">🧲</span><span id="txt-ima">ÍMÃ LIGADO</span>
+      </button>
+    </div>
+
+    <div class="grupo-bt grupo-zoom">
+      <span class="zoom-nome">ZOOM</span>
+      <button id="btn-afastar" class="bt bt-claro" disabled>
+        <span class="bt-ico">➖</span><span>AFASTAR</span>
+      </button>
+      <span class="zoom-nivel" id="zoom-nivel">100%</span>
+      <button id="btn-aproximar" class="bt bt-claro" disabled>
+        <span class="bt-ico">➕</span><span>APROXIMAR</span>
+      </button>
+      <button id="btn-caber" class="bt bt-claro" disabled>
+        <span class="bt-ico">↔️</span><span>CABER NA TELA</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="trilho" id="trilho">
+    <div class="regua" id="regua"></div>
+    <div class="pista" id="pista">
+      <div class="segmentos" id="segmentos"></div>
+    </div>
+    <div class="agulha" id="agulha"><div class="agulha-cabeca"></div></div>
+  </div>
+
+  <div class="rodape-dica" id="rodape-dica">
+    Arraste os pedaços para mudar a ordem · Puxe as bordas para encurtar ·
+    Clique na régua para mover a agulha · Segure Ctrl e role o mouse para dar zoom
+  </div>
+</section>
+
+<div class="trabalhando escondido" id="trabalhando">
+  <div class="caixa-trabalho">
+    <div class="trabalho-titulo" id="trabalho-titulo">Trabalhando...</div>
+    <div class="barra"><div class="barra-dentro" id="barra-dentro"></div></div>
+    <div class="trabalho-texto" id="trabalho-texto">Só um instante</div>
+    <button id="btn-parar" class="bt bt-vermelho">
+      <span class="bt-ico">✋</span><span>PARAR</span>
+    </button>
+  </div>
+</div>
+
+<div class="pergunta escondido" id="pergunta">
+  <div class="caixa-pergunta">
+    <div class="pergunta-titulo" id="pergunta-titulo">Tem certeza?</div>
+    <div class="pergunta-texto" id="pergunta-texto"></div>
+    <div class="pergunta-botoes">
+      <button id="pergunta-nao" class="bt bt-escuro"><span>NÃO</span></button>
+      <button id="pergunta-sim" class="bt bt-vermelho"><span>SIM</span></button>
+    </div>
+  </div>
+</div>
+
+<script>window.__TESTE = 1;</script>
+<script src="app.js"></script>
+</body>
+</html>

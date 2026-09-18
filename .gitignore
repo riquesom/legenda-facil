@@ -1,0 +1,25 @@
+# ambientes e caches
+.venv/
+.venv-build/
+__pycache__/
+*.pyc
+
+# resultado do empacotamento
+build/
+dist/
+Output/
+.dmg_tmp/
+*.dmg
+*.exe
+webview2.exe
+
+# baixado na hora de montar (460 MB) — use: python baixar_modelo.py
+modelo/
+
+# sistema
+.DS_Store
+
+# gerados para teste — refaça com: python preparar_teste.py
+web/exemplo.mp4
+web/tira.jpg
+recursos/icone.iconset/
